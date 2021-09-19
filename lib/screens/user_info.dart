@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:online_store/constants/colors.dart';
+import 'package:online_store/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserInfo extends StatefulWidget {
   @override
@@ -9,7 +11,6 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
-  bool _switch = false;
   ScrollController? _scrollController;
   var top = 0.0;
 
@@ -30,6 +31,7 @@ class _UserInfoState extends State<UserInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final themeValue = Provider.of<ThemeProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -141,11 +143,11 @@ class _UserInfoState extends State<UserInfo> {
                     ),
                     const Divider(),
                     ListTileSwitch(
-                      value: _switch,
+                      value: themeValue.darkTheme,
                       leading: Icon(Icons.dark_mode),
                       onChanged: (value) {
                         setState(() {
-                          _switch = value;
+                          themeValue.darkTheme = value;
                         });
                       },
                       visualDensity: VisualDensity.comfortable,
