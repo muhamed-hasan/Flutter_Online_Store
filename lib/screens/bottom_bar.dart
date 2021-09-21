@@ -57,8 +57,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           child: BottomNavigationBar(
             onTap: _selectPage,
             currentIndex: _selectedPageIndex,
-            backgroundColor: Theme.of(context).primaryColor,
-            selectedItemColor: Colors.purple,
+            selectedItemColor: Theme.of(context).accentColor,
             unselectedItemColor: Theme.of(context).textSelectionColor,
             items: const [
               BottomNavigationBarItem(icon: Icon(KIcons.home), label: 'Home'),
@@ -72,9 +71,12 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purple,
         elevation: 5,
-        child: const Icon(Icons.search),
+        child: Icon(
+          Icons.search,
+          color: Theme.of(context).accentColor,
+        ),
+        backgroundColor: Theme.of(context).backgroundColor,
         onPressed: () {
           _selectPage(2);
         },

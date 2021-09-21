@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
-      scaffoldBackgroundColor:
-          isDarkTheme ? Colors.black : Colors.grey.shade100,
-      primarySwatch: Colors.purple,
+      scaffoldBackgroundColor: isDarkTheme ? Colors.black : Colors.white,
+      primarySwatch: Colors.indigo,
       primaryColor: isDarkTheme ? Colors.black : Colors.grey.shade300,
-      accentColor: Colors.deepPurple,
-      backgroundColor: isDarkTheme ? Colors.grey.shade700 : Colors.white,
+      accentColor: isDarkTheme ? Colors.blue : Colors.blueAccent[700],
+      backgroundColor:
+          isDarkTheme ? Colors.grey.shade700 : Colors.grey.shade100,
       indicatorColor:
           isDarkTheme ? const Color(0xff0E1D36) : const Color(0xffCBDCF8),
       buttonColor:
