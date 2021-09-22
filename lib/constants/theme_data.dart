@@ -9,8 +9,9 @@ class Styles {
       primarySwatch: Colors.indigo,
       primaryColor: isDarkTheme ? Colors.black : Colors.grey.shade300,
       accentColor: isDarkTheme ? Colors.blue : Colors.blueAccent[700],
-      backgroundColor:
-          isDarkTheme ? Colors.grey.shade700 : Colors.grey.shade100,
+      backgroundColor: isDarkTheme
+          ? Colors.grey.shade900.withOpacity(.7)
+          : Colors.grey.shade100.withOpacity(.4),
       indicatorColor:
           isDarkTheme ? const Color(0xff0E1D36) : const Color(0xffCBDCF8),
       buttonColor:
