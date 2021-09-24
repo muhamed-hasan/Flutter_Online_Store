@@ -13,7 +13,7 @@ class _FeedProductState extends State<FeedProduct> {
     return Container(
       margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Column(

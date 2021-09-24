@@ -6,19 +6,20 @@ class Feeds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         body: Center(
-      child: SizedBox(
-        width: 600,
-        child: StaggeredGridView.countBuilder(
-          crossAxisCount: 6,
-          itemCount: 8,
-          itemBuilder: (BuildContext context, int index) => FeedProduct(),
-          staggeredTileBuilder: (int index) =>
-              StaggeredTile.count(3, index.isEven ? 4 : 4.5),
-          mainAxisSpacing: 10.0,
-          crossAxisSpacing: 15.0,
-        ),
-      ),
-    ));
+          child: SizedBox(
+            width: 600,
+            child: StaggeredGridView.countBuilder(
+              crossAxisCount: 6,
+              itemCount: 8,
+              itemBuilder: (BuildContext context, int index) => FeedProduct(),
+              staggeredTileBuilder: (int index) =>
+                  StaggeredTile.count(3, index.isEven ? 4 : 4.5),
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 15.0,
+            ),
+          ),
+        ));
   }
 }
