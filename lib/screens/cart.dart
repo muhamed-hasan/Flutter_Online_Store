@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:online_store/screens/cart_empty.dart';
+import 'package:online_store/screens/widgets/cart_empty.dart';
 import 'package:online_store/screens/widgets/cart_item.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
 
-class Cart extends StatelessWidget {
+class CartScreen extends StatelessWidget {
+  static const routeName = '/Cart';
   @override
   Widget build(BuildContext context) {
     List products = [1];

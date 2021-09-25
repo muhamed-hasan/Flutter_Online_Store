@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/theme_data.dart';
 import 'package:online_store/provider/theme_provider.dart';
+import 'package:online_store/screens/cart.dart';
+import 'package:online_store/screens/feeds.dart';
+import 'package:online_store/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/bottom_bar.dart';
@@ -45,6 +48,9 @@ class _MyAppState extends State<MyApp> {
             routes: {
               BrandNavigationRailScreen.routeName: (ctx) =>
                   BrandNavigationRailScreen(),
+              CartScreen.routeName: (ctx) => CartScreen(),
+              FeedsScreen.routeName: (ctx) => FeedsScreen(),
+              WishListScreen.routeName: (ctx) => WishListScreen(),
             },
           );
         }));

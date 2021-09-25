@@ -21,16 +21,16 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
       'page': Home(),
     },
     {
-      'page': Feeds(),
+      'page': FeedsScreen(),
     },
     {
       'page': Search(),
     },
     {
-      'page': Cart(),
+      'page': CartScreen(),
     },
     {
-      'page': UserInfo(),
+      'page': UserInfoScreen(),
     },
   ];
   int _selectedPageIndex = 0;

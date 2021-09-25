@@ -15,10 +15,10 @@ class KColorsConsts {
 
   static const Color gradiendFStart = Color(0xFF5540FF); //purpleaccent 100
   static const Color gradiendFEnd = Color(0xFF70BEE7); //purple 100
-  static const Color endColor = Color(0xFFCE93D8); //purple 200
+  static const Color endColor = Color(0xFF5593aa); //purple 200
   static const Color purple300 = Color(0xFFBA68C8); //purple 300
   static const Color gradiendLEnd = Color(0xFFAB47BC); //purple 400
   static const Color gradiendLStart = Color(0xFFAA00FF); //purpleaccent 700
-  static const Color starterColor = Color(0xFF8E24AA); //purple 600
+  static const Color starterColor = Color(0xFF70BEE7); //purple 600
   static const Color purple800 = Color(0xFF6A1B9A);
 }

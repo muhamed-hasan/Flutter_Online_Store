@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:online_store/constants/colors.dart';
 import 'package:online_store/provider/theme_provider.dart';
+import 'package:online_store/screens/cart.dart';
+import 'package:online_store/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 
-class UserInfo extends StatefulWidget {
+class UserInfoScreen extends StatefulWidget {
   @override
-  State<UserInfo> createState() => _UserInfoState();
+  State<UserInfoScreen> createState() => _UserInfoScreenState();
 }
 
-class _UserInfoState extends State<UserInfo> {
+class _UserInfoScreenState extends State<UserInfoScreen> {
   ScrollController? _scrollController;
   var top = 0.0;
 
@@ -112,6 +114,22 @@ class _UserInfoState extends State<UserInfo> {
                       child: userTitle('User Bag'),
                     ),
                     const Divider(),
+                    userListTile(
+                        context: context,
+                        title: 'Wishlist',
+                        subTitle: '',
+                        index: 5,
+                        color: Colors.red,
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(WishListScreen.routeName)),
+                    userListTile(
+                        context: context,
+                        title: 'Cart',
+                        subTitle: '',
+                        index: 6,
+                        color: Colors.yellow,
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(CartScreen.routeName)),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: userTitle('User Information'),
@@ -225,19 +243,31 @@ class _UserInfoState extends State<UserInfo> {
     Icons.local_shipping,
     Icons.watch_later,
     Icons.exit_to_app_rounded,
+    Icons.favorite_border,
+    Icons.shopping_cart_outlined
   ];
 
   Widget userListTile(
-      {BuildContext? context, String? title, String? subTitle, int? index}) {
+      {BuildContext? context,
+      String? title,
+      String? subTitle,
+      int? index,
+      Function? onTap,
+      Color color = Colors.grey}) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         splashColor: Theme.of(context!).splashColor,
-        onTap: () {},
+        onTap: () {
+          onTap != null ? onTap() : () {};
+        },
         child: ListTile(
           title: Text(title!),
           subtitle: Text(subTitle!),
-          leading: Icon(_userTileIcons[index!]),
+          leading: Icon(
+            _userTileIcons[index!],
+            color: color,
+          ),
         ),
       ),
     );
