@@ -4,6 +4,7 @@ import 'package:online_store/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/bottom_bar.dart';
+import 'screens/brands_screen/brands_navigation_rail.dart';
 
 void main() {
   runApp(MyApp());
@@ -41,6 +42,10 @@ class _MyAppState extends State<MyApp> {
             title: 'Flutter Demo',
             theme: Styles.themeData(themeProvider.darkTheme, context),
             home: BottomBarScreen(),
+            routes: {
+              BrandNavigationRailScreen.routeName: (ctx) =>
+                  BrandNavigationRailScreen(),
+            },
           );
         }));
   }

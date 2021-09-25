@@ -2,6 +2,7 @@ import 'package:backdrop/backdrop.dart';
 import 'package:backdrop/scaffold.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:online_store/screens/brands_screen/brands_navigation_rail.dart';
 
 class Home extends StatelessWidget {
   final List<String> _banner = [
@@ -104,7 +105,7 @@ class Home extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
-                Category(),
+                category(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -129,7 +130,7 @@ class Home extends StatelessWidget {
                     ],
                   ),
                 ),
-                Center(child: popularBrands()),
+                Center(child: popularBrands(context)),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -182,7 +183,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget popularBrands() {
+  Widget popularBrands(BuildContext context) {
     return SizedBox(
       height: 210,
       width: 500,
@@ -199,14 +200,15 @@ class Home extends StatelessWidget {
         },
         itemCount: _brands.length,
         onTap: (index) {
-          //TODO
+          Navigator.of(context).pushNamed(BrandNavigationRailScreen.routeName,
+              arguments: {'index': index});
         },
         // control: SwiperControl(),
       ),
     );
   }
 
-  Widget Category() {
+  Widget category() {
     return SizedBox(
         height: 200,
         child: ListView.builder(
@@ -287,7 +289,8 @@ class Home extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Text(
                     _products[index]['categoryName']!,
                     style: const TextStyle(
