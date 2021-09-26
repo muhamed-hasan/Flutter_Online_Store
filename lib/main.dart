@@ -3,6 +3,7 @@ import 'package:online_store/constants/theme_data.dart';
 import 'package:online_store/provider/theme_provider.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/feeds.dart';
+import 'package:online_store/screens/product_screen/product_details.dart';
 import 'package:online_store/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +52,7 @@ class _MyAppState extends State<MyApp> {
               CartScreen.routeName: (ctx) => CartScreen(),
               FeedsScreen.routeName: (ctx) => FeedsScreen(),
               WishListScreen.routeName: (ctx) => WishListScreen(),
+              ProductDetails.routeName: (ctx) => ProductDetails(),
             },
           );
         }));

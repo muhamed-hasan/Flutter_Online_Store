@@ -8,7 +8,7 @@ class KColorsConsts {
   static const Color black = Color(0xFF000000);
 
   static const Color favColor = Color(0xFF3843FB);
-  static const Color favBadgeColor = Color(0xFFE57373); // red 300
+  static const Color favBadgeColor = Colors.red; // red 300
 
   static const Color cartColor = Color(0xFF5E35B1); //deep purple 600
   static const Color cartBadgeColor = Color(0xFFBA68C8); //purple 300
