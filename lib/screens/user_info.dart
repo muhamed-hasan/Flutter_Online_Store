@@ -33,7 +33,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeValue = Provider.of<ThemeProvider>(context);
+    final themeValue = Provider.of<ThemeProvider>(context, listen: false);
     return Scaffold(
       body: Stack(
         children: [

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/colors.dart';
+import 'package:online_store/models/product.dart';
+import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/theme_provider.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/widgets/feed_product.dart';
@@ -11,16 +13,32 @@ import 'package:provider/provider.dart';
 class ProductDetails extends StatefulWidget {
   static const routeName = '/ProductDetails';
 
+  const ProductDetails({
+    Key? key,
+  }) : super(key: key);
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
   GlobalKey previewContainer = GlobalKey();
+  Product? _product;
+  final padding = 8.0;
+  Map<String, Product>? routeArgs;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    routeArgs =
+        ModalRoute.of(context)!.settings.arguments as Map<String, Product>?;
+    _product = routeArgs!['product']!;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final themeState = Provider.of<ThemeProvider>(context);
+    final themeState = Provider.of<ThemeProvider>(context, listen: false);
+    final _products = Provider.of<Products>(context, listen: false).products;
     return Scaffold(
       body: Stack(
         children: [
@@ -29,12 +47,11 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 40),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.45,
                   width: double.infinity,
-                  child: Image.network(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4PdHtXka2-bDDww6Nuect3Mt9IwpE4v4HNw&usqp=CAU',
-                      fit: BoxFit.contain),
+                  child: Image.network(_product!.imageUrl, fit: BoxFit.contain),
                 ),
                 // const SizedBox(height: 260),
                 Padding(
@@ -49,7 +66,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           onTap: () {},
                           borderRadius: BorderRadius.circular(30),
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Icon(
                               Icons.save,
                               size: 23,
@@ -88,10 +105,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.9,
-                              child: const Text(
-                                'title',
+                              child: Text(
+                                _product!.title,
                                 maxLines: 2,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   // color: Theme.of(context).textSelectionColor,
                                   fontSize: 28.0,
                                   fontWeight: FontWeight.w600,
@@ -100,7 +117,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'US \$ 15',
+                              'US \$ ${_product!.price}',
                               style: TextStyle(
                                   color: themeState.darkTheme
                                       ? Theme.of(context).disabledColor
@@ -125,7 +142,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Description',
+                          _product!.description,
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 21.0,
@@ -144,10 +161,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                           height: 1,
                         ),
                       ),
-                      _details(themeState.darkTheme, 'Brand: ', 'BrandName'),
-                      _details(themeState.darkTheme, 'Quantity: ', '12 Left'),
-                      _details(themeState.darkTheme, 'Category: ', 'Cat Name'),
-                      _details(themeState.darkTheme, 'Popularity: ', 'Popular'),
+                      _details(
+                          themeState.darkTheme, 'Brand: ', _product!.brand),
+                      _details(themeState.darkTheme, 'Quantity: ',
+                          _product!.quantity.toString()),
+                      _details(themeState.darkTheme, 'Category: ',
+                          _product!.productCategory),
+                      _details(themeState.darkTheme, 'Popularity: ',
+                          _product!.isPopular.toString()),
                       const SizedBox(height: 15),
                       const Divider(),
 
@@ -201,17 +222,23 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(bottom: 30),
-                  width: double.infinity,
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: 7,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext ctx, int index) {
-                      return FeedProduct();
-                    },
-                  ),
-                ),
+                    margin: const EdgeInsets.only(bottom: 30),
+                    width: double.infinity,
+                    height: 300,
+                    child: ListView.builder(
+                      itemCount: _products.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext ctx, int index) {
+                        return ChangeNotifierProvider.value(
+                          value: _products[index],
+                          child: const SizedBox(
+                            width: 200,
+                            child: FeedProduct(),
+                          ),
+                        );
+                        // return Container();
+                      },
+                    ))
               ],
             ),
           ),
@@ -223,11 +250,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 0,
                 foregroundColor: Theme.of(context).textSelectionColor,
+                // backgroundColor: Colors.transparent,
                 centerTitle: true,
-                title: const Text(
-                  "DETAIL",
-                  style:
-                      TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+                title: Text(
+                  _product!.title,
+                  style: const TextStyle(
+                      fontSize: 16.0, fontWeight: FontWeight.normal),
                 ),
                 actions: <Widget>[
                   IconButton(
@@ -240,7 +268,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.shopping_cart_outlined,
                     ),
                     onPressed: () {
@@ -264,7 +292,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       onPressed: () {},
                       child: Text(
                         'Add to Cart'.toUpperCase(),
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),

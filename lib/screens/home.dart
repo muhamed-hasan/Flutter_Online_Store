@@ -2,8 +2,9 @@ import 'package:backdrop/backdrop.dart';
 import 'package:backdrop/scaffold.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:online_store/screens/brands_screen/brands_navigation_rail.dart';
 import 'package:online_store/screens/widgets/backlayer.dart';
+
+import 'inner_screen/brands_navigation_rail.dart';
 
 class Home extends StatelessWidget {
   final List<String> _banner = [
