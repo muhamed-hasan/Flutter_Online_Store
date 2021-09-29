@@ -10,12 +10,14 @@ class FeedsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Product>? _products;
-    final categoryName = ModalRoute.of(context)?.settings.arguments;
-    if (categoryName == null) {
+    final argument = ModalRoute.of(context)?.settings.arguments;
+    if (argument == null) {
       _products = Provider.of<Products>(context, listen: false).products;
+    } else if (argument == 'popular') {
+      _products = Provider.of<Products>(context, listen: false).popularProducts;
     } else {
       _products = Provider.of<Products>(context, listen: false)
-          .findByCategory(categoryName.toString());
+          .findByCategory(argument.toString());
     }
 
     return Scaffold(
@@ -24,7 +26,7 @@ class FeedsScreen extends StatelessWidget {
           elevation: 0,
           backgroundColor: Theme.of(context).backgroundColor,
           foregroundColor: Theme.of(context).textSelectionColor,
-          title: Text('Feeds'),
+          title: const Text('Feeds'),
         ),
         body: Center(
             child: SizedBox(

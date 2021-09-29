@@ -52,7 +52,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final _products =
         Provider.of<Products>(context, listen: false).popularProducts;
-    print(_products.length);
     return BackdropScaffold(
       frontLayerBackgroundColor: Theme.of(context).backgroundColor,
       headerHeight: MediaQuery.of(context).size.height * .25,
@@ -137,9 +136,11 @@ class Home extends StatelessWidget {
                       const Spacer(),
                       TextButton(
                           onPressed: () {
-                            //TODO
+                            Navigator.of(context).pushNamed(
+                                FeedsScreen.routeName,
+                                arguments: 'popular');
                           },
-                          child: Text(
+                          child: const Text(
                             'View all >>',
                             style: TextStyle(
                                 fontWeight: FontWeight.w800,
@@ -267,9 +268,11 @@ class Home extends StatelessWidget {
                             children: [
                               SizedBox(
                                 height: 200,
-                                child: Image.network(
-                                  _products[index].imageUrl,
-                                  fit: BoxFit.cover,
+                                child: Center(
+                                  child: Image.network(
+                                    _products[index].imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               Positioned(
@@ -292,6 +295,8 @@ class Home extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             _products[index].title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -313,7 +318,7 @@ class Home extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${_products[index].price} \$',
+                                '\$ ${_products[index].price}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     color: Theme.of(context).accentColor),

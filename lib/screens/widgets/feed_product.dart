@@ -44,17 +44,19 @@ class _FeedProductState extends State<FeedProduct> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    left: 0,
-                    child: Badge(
-                      toAnimate: true,
-                      shape: BadgeShape.square,
-                      badgeColor: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(8),
-                      badgeContent: const Text('New',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
+                  _product.isPopular
+                      ? Positioned(
+                          left: 0,
+                          child: Badge(
+                            toAnimate: true,
+                            shape: BadgeShape.square,
+                            badgeColor: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(8),
+                            badgeContent: const Text('Popular',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),

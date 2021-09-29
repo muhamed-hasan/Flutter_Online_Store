@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/colors.dart';
 import 'package:online_store/models/product.dart';
@@ -40,6 +41,36 @@ class _ProductDetailsState extends State<ProductDetails> {
     final themeState = Provider.of<ThemeProvider>(context, listen: false);
     final _products = Provider.of<Products>(context, listen: false).products;
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0,
+          foregroundColor: Theme.of(context).textSelectionColor,
+          // backgroundColor: Colors.transparent,
+          centerTitle: true,
+          title: Text(
+            _product!.title,
+            style:
+                const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.favorite_border,
+                color: KColorsConsts.favBadgeColor,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(WishListScreen.routeName);
+              },
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.shopping_cart_outlined,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
+          ]),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -47,11 +78,29 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.45,
                   width: double.infinity,
-                  child: Image.network(_product!.imageUrl, fit: BoxFit.contain),
+                  child: Stack(
+                    children: [
+                      Center(
+                          child: Image.network(_product!.imageUrl,
+                              fit: BoxFit.contain)),
+                      _product!.isPopular
+                          ? Positioned(
+                              left: 50,
+                              child: Badge(
+                                toAnimate: true,
+                                shape: BadgeShape.square,
+                                badgeColor: Colors.deepPurple,
+                                borderRadius: BorderRadius.circular(8),
+                                badgeContent: const Text('Popular',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
                 // const SizedBox(height: 260),
                 Padding(
@@ -167,8 +216,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           _product!.quantity.toString()),
                       _details(themeState.darkTheme, 'Category: ',
                           _product!.productCategory),
-                      _details(themeState.darkTheme, 'Popularity: ',
-                          _product!.isPopular.toString()),
+                      // _details(themeState.darkTheme, 'Popularity: ',
+                      //     _product!.isPopular.toString()),
                       const SizedBox(height: 15),
                       const Divider(),
 
@@ -241,41 +290,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ))
               ],
             ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 0,
-                foregroundColor: Theme.of(context).textSelectionColor,
-                // backgroundColor: Colors.transparent,
-                centerTitle: true,
-                title: Text(
-                  _product!.title,
-                  style: const TextStyle(
-                      fontSize: 16.0, fontWeight: FontWeight.normal),
-                ),
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.favorite_border,
-                      color: KColorsConsts.favBadgeColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(WishListScreen.routeName);
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.shopping_cart_outlined,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(CartScreen.routeName);
-                    },
-                  ),
-                ]),
           ),
           Align(
               alignment: Alignment.bottomCenter,
