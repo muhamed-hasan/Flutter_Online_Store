@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/models/product.dart';
+import 'package:online_store/provider/product_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'brands_rail_widget.dart';
 
@@ -17,6 +20,7 @@ class _BrandNavigationRailScreenState extends State<BrandNavigationRailScreen> {
   Map<String, int>? routeArgs;
   String? brand;
   final List<String> _brands = [
+    "All",
     'Addidas',
     "Apple",
     "Dell",
@@ -24,13 +28,11 @@ class _BrandNavigationRailScreenState extends State<BrandNavigationRailScreen> {
     "Nike",
     "Samsung",
     "Huawei",
-    "All",
   ];
   @override
   void didChangeDependencies() {
     routeArgs = ModalRoute.of(context)!.settings.arguments as Map<String, int>?;
     _selectedIndex = routeArgs!['index']!;
-    print(routeArgs.toString());
 
     setState(() {
       brand = _brands[_selectedIndex];
@@ -57,65 +59,31 @@ class _BrandNavigationRailScreenState extends State<BrandNavigationRailScreen> {
                       onDestinationSelected: (int index) {
                         setState(() {
                           _selectedIndex = index;
-                          if (_selectedIndex == 0) {
-                            setState(() {
-                              brand = 'Addidas';
-                            });
-                          }
-                          if (_selectedIndex == 1) {
-                            setState(() {
-                              brand = 'Apple';
-                            });
-                          }
-                          if (_selectedIndex == 2) {
-                            setState(() {
-                              brand = 'Dell';
-                            });
-                          }
-                          if (_selectedIndex == 3) {
-                            setState(() {
-                              brand = 'H&M';
-                            });
-                          }
-                          if (_selectedIndex == 4) {
-                            setState(() {
-                              brand = 'Nike';
-                            });
-                          }
-                          if (_selectedIndex == 5) {
-                            setState(() {
-                              brand = 'Samsung';
-                            });
-                          }
-                          if (_selectedIndex == 6) {
-                            setState(() {
-                              brand = 'Huawei';
-                            });
-                          }
-                          if (_selectedIndex == 7) {
-                            setState(() {
-                              brand = 'All';
-                            });
-                          }
+                          brand = _brands[_selectedIndex];
+
                           print(brand);
                         });
                       },
                       labelType: NavigationRailLabelType.all,
                       leading: Column(
-                        children: const [
-                          SizedBox(
+                        children: [
+                          const SizedBox(
                             height: 20,
                           ),
-                          Center(
+                          const Center(
                             child: CircleAvatar(
                               radius: 16,
                               backgroundImage: NetworkImage(
                                   "https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg"),
                             ),
                           ),
-                          SizedBox(
-                            height: 80,
-                          ),
+                          const SizedBox(height: 20),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(Icons.reply_outlined)),
+                          const SizedBox(height: 10),
                         ],
                       ),
                       selectedLabelTextStyle: TextStyle(
@@ -124,7 +92,7 @@ class _BrandNavigationRailScreenState extends State<BrandNavigationRailScreen> {
                         letterSpacing: 1,
                         decorationThickness: 2.5,
                       ),
-                      unselectedLabelTextStyle: TextStyle(
+                      unselectedLabelTextStyle: const TextStyle(
                         fontSize: 15,
                         letterSpacing: 0.8,
                       ),
@@ -150,7 +118,7 @@ class _BrandNavigationRailScreenState extends State<BrandNavigationRailScreen> {
 NavigationRailDestination buildRotatedTextRailDestination(
     String text, double padding) {
   return NavigationRailDestination(
-    icon: SizedBox.shrink(),
+    icon: const SizedBox.shrink(),
     label: Padding(
       padding: EdgeInsets.symmetric(vertical: padding),
       child: RotatedBox(
@@ -163,33 +131,14 @@ NavigationRailDestination buildRotatedTextRailDestination(
 
 class ContentSpace extends StatelessWidget {
   // final int _selectedIndex;
-  final List<Map<String, String>> _products = [
-    {
-      'categoryName': 'Sun Lotion',
-      'categoryImage':
-          'https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/25/987712/1.jpg',
-    },
-    {
-      'categoryName': 'Smart Tv',
-      'categoryImage':
-          'https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/41/769422/1.jpg?1231',
-    },
-    {
-      'categoryName': 'Washer',
-      'categoryImage':
-          'https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/44/737071/1.jpg?9242',
-    },
-    {
-      'categoryName': 'Smart watch',
-      'categoryImage':
-          'https://eg.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/59/354802/1.jpg?9466',
-    },
-  ];
+
   final String brand;
   ContentSpace(BuildContext context, this.brand);
 
   @override
   Widget build(BuildContext context) {
+    final _products = Provider.of<Products>(context, listen: false)
+        .findByBrand(brand) as List<Product>;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 8, 0, 0),
@@ -202,11 +151,11 @@ class ContentSpace extends StatelessWidget {
     );
   }
 
-  Widget popularProducts(List<Map<String, String>> products) {
+  Widget popularProducts(List<Product> _products) {
     return SizedBox(
         // width: 200,
         child: ListView.separated(
-      separatorBuilder: (context, index) => Divider(),
+      separatorBuilder: (context, index) => const Divider(),
       scrollDirection: Axis.vertical,
       itemCount: _products.length,
       itemBuilder: (context, index) => Container(
@@ -223,9 +172,10 @@ class ContentSpace extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 180,
+                      width: 120,
                       child: Image.network(
-                        _products[index]['categoryImage']!,
-                        fit: BoxFit.cover,
+                        _products[index].imageUrl,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     Positioned(
@@ -248,7 +198,7 @@ class ContentSpace extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          _products[index]['categoryName']!,
+                          _products[index].title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontWeight: FontWeight.w800),
@@ -257,7 +207,7 @@ class ContentSpace extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          _products[index]['categoryName']!,
+                          _products[index].description,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -286,7 +236,7 @@ class ContentSpace extends StatelessWidget {
                       onPressed: () {
                         //TODO
                       },
-                      icon: Icon(Icons.shopping_cart_outlined))
+                      icon: Icon(Icons.add_shopping_cart_rounded))
                 ],
               ),
             ),

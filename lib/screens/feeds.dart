@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:online_store/models/product.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/screens/widgets/feed_product.dart';
 import 'package:provider/provider.dart';
@@ -8,22 +9,36 @@ class FeedsScreen extends StatelessWidget {
   static const routeName = '/Feeds';
   @override
   Widget build(BuildContext context) {
-    final _products = Provider.of<Products>(context, listen: false).products;
+    List<Product>? _products;
+    final categoryName = ModalRoute.of(context)?.settings.arguments;
+    if (categoryName == null) {
+      _products = Provider.of<Products>(context, listen: false).products;
+    } else {
+      _products = Provider.of<Products>(context, listen: false)
+          .findByCategory(categoryName.toString());
+    }
+
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).backgroundColor,
+          foregroundColor: Theme.of(context).textSelectionColor,
+          title: Text('Feeds'),
+        ),
         body: Center(
             child: SizedBox(
                 width: 600,
                 child: StaggeredGridView.countBuilder(
                   crossAxisCount: 6,
-                  itemCount: _products.length,
+                  itemCount: _products!.length,
                   itemBuilder: (BuildContext context, int index) =>
                       ChangeNotifierProvider.value(
                     //! we cant add change notifier in main as feedProduct()
                     //! will take specific argument with data
                     //! this way we can send product with index in provider
 
-                    value: _products[index],
+                    value: _products![index],
                     child: const FeedProduct(),
                   ),
                   staggeredTileBuilder: (int index) =>
