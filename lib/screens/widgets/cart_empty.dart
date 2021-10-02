@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/screens/bottom_bar.dart';
+import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
 
 class CartEmpty extends StatelessWidget {
@@ -35,8 +37,9 @@ class CartEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           CustomButton(
-            title: 'SHOP NOW',
-          )
+              title: 'SHOP NOW',
+              onTap: () =>
+                  Navigator.of(context).pushNamed(FeedsScreen.routeName))
         ],
       ),
     );

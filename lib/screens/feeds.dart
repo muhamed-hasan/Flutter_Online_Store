@@ -12,11 +12,13 @@ class FeedsScreen extends StatelessWidget {
     List<Product>? _products;
     final argument = ModalRoute.of(context)?.settings.arguments;
     if (argument == null) {
-      _products = Provider.of<Products>(context, listen: false).products;
+      _products =
+          Provider.of<ProductsProvider>(context, listen: false).products;
     } else if (argument == 'popular') {
-      _products = Provider.of<Products>(context, listen: false).popularProducts;
+      _products =
+          Provider.of<ProductsProvider>(context, listen: false).popularProducts;
     } else {
-      _products = Provider.of<Products>(context, listen: false)
+      _products = Provider.of<ProductsProvider>(context, listen: false)
           .findByCategory(argument.toString());
     }
 

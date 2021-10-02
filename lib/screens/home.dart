@@ -51,7 +51,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _products =
-        Provider.of<Products>(context, listen: false).popularProducts;
+        Provider.of<ProductsProvider>(context, listen: false).popularProducts;
     return BackdropScaffold(
       frontLayerBackgroundColor: Theme.of(context).backgroundColor,
       headerHeight: MediaQuery.of(context).size.height * .25,

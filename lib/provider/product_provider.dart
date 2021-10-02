@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:online_store/models/product.dart';
 
-class Products with ChangeNotifier {
+class ProductsProvider with ChangeNotifier {
   final List<Product> _products = [
     Product(
         id: 'Samsung1',

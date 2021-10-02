@@ -137,7 +137,7 @@ class ContentSpace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _products = Provider.of<Products>(context, listen: false)
+    final _products = Provider.of<ProductsProvider>(context, listen: false)
         .findByBrand(brand) as List<Product>;
     return Expanded(
       child: Padding(

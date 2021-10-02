@@ -4,6 +4,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/colors.dart';
 import 'package:online_store/models/product.dart';
+import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/theme_provider.dart';
 import 'package:online_store/screens/cart.dart';
@@ -39,7 +40,9 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final themeState = Provider.of<ThemeProvider>(context, listen: false);
-    final _products = Provider.of<Products>(context, listen: false).products;
+    final _suggestedProducts =
+        Provider.of<ProductsProvider>(context, listen: false).popularProducts;
+    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -275,11 +278,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     width: double.infinity,
                     height: 300,
                     child: ListView.builder(
-                      itemCount: _products.length,
+                      itemCount: _suggestedProducts.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (BuildContext ctx, int index) {
                         return ChangeNotifierProvider.value(
-                          value: _products[index],
+                          value: _suggestedProducts[index],
                           child: const SizedBox(
                             width: 200,
                             child: FeedProduct(),
@@ -303,7 +306,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(0)),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _cartProduct.addProduct(_product!.id, _product!.title,
+                            _product!.imageUrl, _product!.price);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Added To Cart'),
+                          duration: Duration(seconds: 1),
+                        ));
+                      },
                       child: Text(
                         'Add to Cart'.toUpperCase(),
                         style:

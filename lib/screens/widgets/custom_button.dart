@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String? title;
-  final Function? onTap;
+  final Function onTap;
 
-  const CustomButton({Key? key, this.title, this.onTap}) : super(key: key);
+  const CustomButton({Key? key, this.title, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
       height: 60,
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       minWidth: 170,
       onPressed: () {
-        onTap;
+        onTap();
       },
       child: Text(
         title!,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
 
+import '../feeds.dart';
+
 class WishListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -35,8 +37,9 @@ class WishListEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           CustomButton(
-            title: 'SHOP NOW',
-          )
+              title: 'SHOP NOW',
+              onTap: () =>
+                  Navigator.of(context).pushNamed(FeedsScreen.routeName))
         ],
       ),
     );

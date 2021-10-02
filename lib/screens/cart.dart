@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/screens/widgets/cart_empty.dart';
 import 'package:online_store/screens/widgets/cart_item.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/Cart';
   @override
   Widget build(BuildContext context) {
-    List products = [1];
-    return products.isEmpty
+    final _cartProducts = Provider.of<CartProvider>(context);
+    return _cartProducts.cartItems.isEmpty
         ? Scaffold(body: CartEmpty())
         : Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              foregroundColor: Theme.of(context).textSelectionColor,
+            ),
             // bottomSheet: checkOut(context),
             body: Column(
               children: [
                 Expanded(
                   child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: 5,
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemCount: _cartProducts.cartItems.length,
                     itemBuilder: (context, index) {
-                      return CartItem();
+                      return CartItem(
+                        cartProduct:
+                            _cartProducts.cartItems.values.toList()[index],
+                      );
                     },
                   ),
                 ),
-                checkOut(context),
-                SizedBox(height: 20)
+                checkOut(context, _cartProducts.totalAmount),
+                const SizedBox(height: 20)
               ],
             ),
           );
   }
 
-  Widget checkOut(BuildContext context) {
+  Widget checkOut(BuildContext context, double total) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -47,7 +56,7 @@ class CartScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    'US \$410 ',
+                    '\$ ${total.toStringAsFixed(2)}',
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -55,7 +64,10 @@ class CartScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              CustomButton(title: 'Checkout'),
+              CustomButton(
+                title: 'Checkout',
+                onTap: () {},
+              ),
             ],
           ),
         )
