@@ -3,6 +3,7 @@ import 'package:backdrop/scaffold.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:online_store/models/product.dart';
+import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/widgets/backlayer.dart';
@@ -52,15 +53,18 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final _products =
         Provider.of<ProductsProvider>(context, listen: false).popularProducts;
+
     return BackdropScaffold(
       frontLayerBackgroundColor: Theme.of(context).backgroundColor,
       headerHeight: MediaQuery.of(context).size.height * .25,
       appBar: BackdropAppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).backgroundColor,
-        title: Text(
-          "Online Shopping",
-          style: TextStyle(color: Theme.of(context).textSelectionColor),
+        title: Center(
+          child: Text(
+            "Online Shopping",
+            style: TextStyle(color: Theme.of(context).textSelectionColor),
+          ),
         ),
         leading: BackdropToggleButton(
           icon: AnimatedIcons.home_menu,
@@ -242,6 +246,7 @@ class Home extends StatelessWidget {
   }
 
   Widget popularProducts(BuildContext context, List<Product> _products) {
+    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
     return SizedBox(
         height: 300,
         child: ListView.builder(
@@ -325,9 +330,21 @@ class Home extends StatelessWidget {
                               ),
                               IconButton(
                                   onPressed: () {
-                                    //TODO
+                                    _cartProduct.addProduct(
+                                        _products[index].id,
+                                        _products[index].title,
+                                        _products[index].imageUrl,
+                                        _products[index].price);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text('Item added to cart'),
+                                      duration: Duration(seconds: 1),
+                                    ));
                                   },
-                                  icon: Icon(Icons.shopping_cart_outlined))
+                                  icon: _cartProduct.cartItems
+                                          .containsKey(_products[index].id)
+                                      ? Icon(Icons.shopping_cart_sharp)
+                                      : Icon(Icons.add_shopping_cart))
                             ],
                           ),
                         ),

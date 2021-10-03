@@ -14,6 +14,8 @@ class CartScreen extends StatelessWidget {
         ? Scaffold(body: CartEmpty())
         : Scaffold(
             appBar: AppBar(
+              title: Text('Cart'),
+              centerTitle: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               foregroundColor: Theme.of(context).textSelectionColor,
             ),
@@ -26,6 +28,7 @@ class CartScreen extends StatelessWidget {
                     itemCount: _cartProducts.cartItems.length,
                     itemBuilder: (context, index) {
                       return CartItem(
+                        productId: _cartProducts.cartItems.keys.toList()[index],
                         cartProduct:
                             _cartProducts.cartItems.values.toList()[index],
                       );

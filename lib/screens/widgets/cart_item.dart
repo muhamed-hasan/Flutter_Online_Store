@@ -1,20 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:online_store/models/cart_product.dart';
 import 'package:online_store/provider/cart_provider.dart';
-import 'package:provider/provider.dart';
 
 class CartItem extends StatelessWidget {
   final bool wishList;
   final CartProduct? cartProduct;
-  const CartItem({
-    Key? key,
+  final String? productId;
+  CartItem({
     this.wishList = false,
     this.cartProduct,
-  }) : super(key: key);
+    this.productId,
+  });
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    Future<void> _showDialog(String title, String subTitle) async {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.warning_amber_rounded,
+                    color: Colors.red,
+                  ),
+                ),
+                Text(title),
+              ],
+            ),
+            content: Text(subTitle),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    cartProvider.deleteProduct(productId!);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Yes')),
+            ],
+          );
+        },
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.all(5),
       child: Row(
@@ -47,9 +84,11 @@ class CartItem extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _showDialog('Are you sure', 'Delete Product');
+                        },
                         icon: const Icon(
-                          Icons.delete,
+                          Icons.delete_forever_rounded,
                           color: Colors.red,
                         ))
                   ],
@@ -87,22 +126,36 @@ class CartItem extends StatelessWidget {
                           children: [
                             IconButton(
                                 onPressed: () {
-                                  //TODO
+                                  cartProvider.removeProduct(
+                                      productId!,
+                                      cartProduct!.title,
+                                      cartProduct!.imageUrl,
+                                      cartProduct!.price);
                                 },
-                                icon: const Icon(
-                                  Icons.remove,
-                                )),
+                                icon: cartProduct!.quantity > 1
+                                    ? const Icon(
+                                        Icons.remove,
+                                      )
+                                    : const Icon(
+                                        Icons.delete,
+                                      )),
                             Container(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.all(5),
                                 width: 40,
                                 child: Text(
                                   cartProduct!.quantity.toString(),
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).accentColor),
                                 )),
                             IconButton(
                                 onPressed: () {
-                                  //   TODO
+                                  cartProvider.addProduct(
+                                      productId!,
+                                      cartProduct!.title,
+                                      cartProduct!.imageUrl,
+                                      cartProduct!.price);
                                 },
                                 icon: const Icon(
                                   Icons.add,
