@@ -3,6 +3,7 @@ import 'package:online_store/constants/theme_data.dart';
 import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/theme_provider.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/wishlist.dart';
@@ -43,6 +44,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => themeProvider),
           ChangeNotifierProvider(create: (_) => ProductsProvider()),
           ChangeNotifierProvider(create: (_) => CartProvider()),
+          ChangeNotifierProvider(create: (_) => WishListProvider()),
         ],
         child: Consumer<ThemeProvider>(builder: (context, themeData, _) {
           return MaterialApp(

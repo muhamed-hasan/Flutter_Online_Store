@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/models/cart_product.dart';
 import 'package:online_store/models/product.dart';
+import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'brands_rail_widget.dart';
@@ -145,13 +148,15 @@ class ContentSpace extends StatelessWidget {
         child: MediaQuery.removePadding(
           // removeTop: false,
           context: context,
-          child: popularProducts(_products),
+          child: popularProducts(_products, context),
         ),
       ),
     );
   }
 
-  Widget popularProducts(List<Product> _products) {
+  Widget popularProducts(List<Product> _products, BuildContext context) {
+    final _wishProvider = Provider.of<WishListProvider>(context);
+    final _cartProvider = Provider.of<CartProvider>(context);
     return SizedBox(
         // width: 200,
         child: ListView.separated(
@@ -181,13 +186,24 @@ class ContentSpace extends StatelessWidget {
                     Positioned(
                       child: IconButton(
                           onPressed: () {
-                            //TODO
+                            _wishProvider.addProduct(
+                                _products[index].id,
+                                _products[index].title,
+                                _products[index].imageUrl,
+                                _products[index].price);
                           },
-                          icon: const Icon(
-                            Icons.favorite_border,
-                            color: Colors.red,
-                            size: 30,
-                          )),
+                          icon: _wishProvider.wishListItems
+                                  .containsKey(_products[index].id)
+                              ? const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.red,
+                                  size: 30,
+                                )),
                     ),
                   ],
                 ),
@@ -227,16 +243,23 @@ class ContentSpace extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '14.99\$',
+                    '\$ ${_products[index].price}',
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).accentColor),
                   ),
                   IconButton(
                       onPressed: () {
-                        //TODO
+                        _cartProvider.addProduct(
+                            _products[index].id,
+                            _products[index].title,
+                            _products[index].imageUrl,
+                            _products[index].price);
                       },
-                      icon: Icon(Icons.add_shopping_cart_rounded))
+                      icon: _cartProvider.cartItems
+                              .containsKey(_products[index].id)
+                          ? const Icon(Icons.shopping_cart)
+                          : const Icon(Icons.add_shopping_cart_rounded))
                 ],
               ),
             ),

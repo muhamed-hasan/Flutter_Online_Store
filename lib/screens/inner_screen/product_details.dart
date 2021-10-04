@@ -7,6 +7,7 @@ import 'package:online_store/models/product.dart';
 import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/theme_provider.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/widgets/feed_product.dart';
 import 'package:online_store/screens/wishlist.dart';
@@ -42,7 +43,8 @@ class _ProductDetailsState extends State<ProductDetails> {
     final themeState = Provider.of<ThemeProvider>(context, listen: false);
     final _suggestedProducts =
         Provider.of<ProductsProvider>(context, listen: false).popularProducts;
-    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
+    final _cartProduct = Provider.of<CartProvider>(context);
+    final _wishListProvider = Provider.of<WishListProvider>(context);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -56,22 +58,48 @@ class _ProductDetailsState extends State<ProductDetails> {
                 const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
           ),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.favorite_border,
-                color: KColorsConsts.favBadgeColor,
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(WishListScreen.routeName);
-              },
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.favorite,
+                    color: KColorsConsts.favBadgeColor,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(WishListScreen.routeName);
+                  },
+                ),
+                CircleAvatar(
+                  maxRadius: 8,
+                  backgroundColor: Theme.of(context).accentColor,
+                  child: FittedBox(
+                      child: Text(
+                    _wishListProvider.wishListItems.length.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  )),
+                )
+              ],
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.shopping_cart_outlined,
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(CartScreen.routeName);
-              },
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.shopping_cart_outlined,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(CartScreen.routeName);
+                  },
+                ),
+                CircleAvatar(
+                  maxRadius: 8,
+                  backgroundColor: Theme.of(context).accentColor,
+                  child: FittedBox(
+                      child: Text(
+                    _cartProduct.cartItems.length.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  )),
+                )
+              ],
             ),
           ]),
       body: Stack(
@@ -356,17 +384,26 @@ class _ProductDetailsState extends State<ProductDetails> {
                   flex: 1,
                   child: Container(
                     color: Theme.of(context).scaffoldBackgroundColor,
-                    // color: themeState.darkTheme
-                    //     ? Theme.of(context).disabledColor
-                    //     : KColorsConsts.subTitle,
                     height: 50,
                     child: InkWell(
                       splashColor: KColorsConsts.favColor,
-                      onTap: () {},
-                      child: const Icon(
-                        Icons.favorite,
-                        color: KColorsConsts.favBadgeColor,
-                      ),
+                      onTap: () {
+                        _wishListProvider.addProduct(
+                            _product!.id,
+                            _product!.title,
+                            _product!.imageUrl,
+                            _product!.price);
+                      },
+                      child: !_wishListProvider.wishListItems
+                              .containsKey(_product!.id)
+                          ? const Icon(
+                              Icons.favorite_border,
+                              color: KColorsConsts.favBadgeColor,
+                            )
+                          : const Icon(
+                              Icons.favorite,
+                              color: KColorsConsts.favBadgeColor,
+                            ),
                     ),
                   ),
                 ),

@@ -1,37 +1,61 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:online_store/screens/widgets/cart_empty.dart';
 import 'package:online_store/screens/widgets/cart_item.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
 import 'package:online_store/screens/widgets/wishlist_empty.dart';
+import 'package:provider/provider.dart';
 
 class WishListScreen extends StatelessWidget {
   static const routeName = '/Wishlist';
+
   @override
   Widget build(BuildContext context) {
-    List wishList = [1];
-    return wishList.isEmpty
-        ? Scaffold(body: WishListEmpty())
+    final _wishListProvider = Provider.of<WishListProvider>(context);
+
+    return _wishListProvider.wishListItems.isEmpty
+        ? Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Wishlist',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              foregroundColor: Theme.of(context).textSelectionColor,
+              centerTitle: true,
+            ),
+            body: WishListEmpty())
         : Scaffold(
             appBar: AppBar(
-              title: Text('Wishlist'),
-              backgroundColor: Theme.of(context).accentColor,
+              title: const Text(
+                'Wishlist',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              foregroundColor: Theme.of(context).textSelectionColor,
+              centerTitle: true,
             ),
             // bottomSheet: checkOut(context),
             body: Column(
               children: [
                 Expanded(
                   child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: 5,
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemCount: _wishListProvider.wishListItems.length,
                     itemBuilder: (context, index) {
                       return CartItem(
                         wishList: true,
+                        productId: _wishListProvider.wishListItems.keys
+                            .toList()[index],
+                        wishListProduct: _wishListProvider.wishListItems.values
+                            .toList()[index],
                       );
                     },
                   ),
                 ),
                 //    checkOut(context),
-                SizedBox(height: 20)
+                const SizedBox(height: 20)
               ],
             ),
           );

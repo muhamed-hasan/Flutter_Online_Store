@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:online_store/models/product.dart';
 import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/widgets/backlayer.dart';
 import 'package:provider/provider.dart';
@@ -246,7 +247,8 @@ class Home extends StatelessWidget {
   }
 
   Widget popularProducts(BuildContext context, List<Product> _products) {
-    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
+    final _cartProduct = Provider.of<CartProvider>(context);
+    final _wishListProvider = Provider.of<WishListProvider>(context);
     return SizedBox(
         height: 300,
         child: ListView.builder(
@@ -285,13 +287,24 @@ class Home extends StatelessWidget {
                                 right: 1,
                                 child: IconButton(
                                     onPressed: () {
-                                      //TODO
+                                      _wishListProvider.addProduct(
+                                          _products[index].id,
+                                          _products[index].title,
+                                          _products[index].imageUrl,
+                                          _products[index].price);
                                     },
-                                    icon: const Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.red,
-                                      size: 30,
-                                    )),
+                                    icon: _wishListProvider.wishListItems
+                                            .containsKey(_products[index].id)
+                                        ? const Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                            size: 30,
+                                          )
+                                        : const Icon(
+                                            Icons.favorite_border,
+                                            color: Colors.red,
+                                            size: 30,
+                                          )),
                               ),
                             ],
                           ),

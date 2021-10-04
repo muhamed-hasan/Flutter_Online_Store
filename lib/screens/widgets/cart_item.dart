@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:online_store/models/cart_product.dart';
+import 'package:online_store/models/wishList_product.dart';
 import 'package:online_store/provider/cart_provider.dart';
 
 class CartItem extends StatelessWidget {
   final bool wishList;
   final CartProduct? cartProduct;
+  final WishlistProduct? wishListProduct;
   final String? productId;
   CartItem({
+    Key? key,
     this.wishList = false,
     this.cartProduct,
+    this.wishListProduct,
     this.productId,
-  });
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final wishProvider = Provider.of<WishListProvider>(context);
     Future<void> _showDialog(String title, String subTitle) async {
       showDialog(
         context: context,
@@ -41,10 +47,15 @@ class CartItem extends StatelessWidget {
                   },
                   child: const Text('Cancel')),
               TextButton(
-                  onPressed: () {
-                    cartProvider.deleteProduct(productId!);
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: wishList
+                      ? () {
+                          wishProvider.deleteProduct(productId!);
+                          Navigator.of(context).pop();
+                        }
+                      : () {
+                          cartProvider.deleteProduct(productId!);
+                          Navigator.of(context).pop();
+                        },
                   child: const Text('Yes')),
             ],
           );
@@ -61,10 +72,15 @@ class CartItem extends StatelessWidget {
             margin: const EdgeInsets.only(right: 10),
             width: wishList ? 100 : 150,
             height: wishList ? 100 : 150,
-            child: Image.network(
-              cartProduct!.imageUrl,
-              fit: BoxFit.contain,
-            ),
+            child: wishList
+                ? Image.network(
+                    wishListProduct!.imageUrl,
+                    fit: BoxFit.contain,
+                  )
+                : Image.network(
+                    cartProduct!.imageUrl,
+                    fit: BoxFit.contain,
+                  ),
           ),
           Flexible(
             child: Column(
@@ -75,13 +91,21 @@ class CartItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      child: Text(
-                        cartProduct!.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 24),
-                      ),
+                      child: wishList
+                          ? Text(
+                              wishListProduct!.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 24),
+                            )
+                          : Text(
+                              cartProduct!.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 24),
+                            ),
                     ),
                     IconButton(
                         onPressed: () {
@@ -96,13 +120,21 @@ class CartItem extends StatelessWidget {
                 Row(
                   children: [
                     const Text('Price : '),
-                    Text(
-                      '\$ ${cartProduct!.price}',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).accentColor),
-                    )
+                    wishList
+                        ? Text(
+                            '\$ ${wishListProduct!.price}',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).accentColor),
+                          )
+                        : Text(
+                            '\$ ${cartProduct!.price}',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).accentColor),
+                          )
                   ],
                 ),
                 wishList
