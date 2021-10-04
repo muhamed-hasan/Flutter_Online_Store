@@ -27,14 +27,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   GlobalKey previewContainer = GlobalKey();
   Product? _product;
   final padding = 8.0;
-  Map<String, Product>? routeArgs;
+  String? productId;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    routeArgs =
-        ModalRoute.of(context)!.settings.arguments as Map<String, Product>?;
-    _product = routeArgs!['product']!;
+    productId = ModalRoute.of(context)!.settings.arguments as String;
+    _product = Provider.of<ProductsProvider>(context).findById(productId!);
     super.didChangeDependencies();
   }
 
@@ -43,8 +42,9 @@ class _ProductDetailsState extends State<ProductDetails> {
     final themeState = Provider.of<ThemeProvider>(context, listen: false);
     final _suggestedProducts =
         Provider.of<ProductsProvider>(context, listen: false).popularProducts;
-    final _cartProduct = Provider.of<CartProvider>(context);
+    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
     final _wishListProvider = Provider.of<WishListProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:online_store/models/product.dart';
 import 'package:online_store/screens/inner_screen/product_details.dart';
+import 'package:online_store/screens/widgets/feeds.dialog.dart';
 import 'package:provider/provider.dart';
 
 class FeedProduct extends StatefulWidget {
@@ -19,8 +20,8 @@ class _FeedProductState extends State<FeedProduct> {
     final _product = Provider.of<Product>(context, listen: false);
 
     return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(ProductDetails.routeName,
-          arguments: {'product': _product}),
+      onTap: () => Navigator.of(context)
+          .pushNamed(ProductDetails.routeName, arguments: _product.id),
       child: Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -100,7 +101,11 @@ class _FeedProductState extends State<FeedProduct> {
                       ),
                       IconButton(
                           onPressed: () {
-                            //TODO
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  FeedDialog(productId: _product.id),
+                            );
                           },
                           icon: const Icon(
                             Icons.more_horiz,

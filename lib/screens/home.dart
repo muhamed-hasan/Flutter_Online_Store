@@ -260,7 +260,7 @@ class Home extends StatelessWidget {
                 return InkWell(
                   onTap: () => Navigator.of(context).pushNamed(
                       ProductDetails.routeName,
-                      arguments: {'product': _products[index]}),
+                      arguments: _products[index].id),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,

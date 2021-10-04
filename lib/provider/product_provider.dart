@@ -130,6 +130,10 @@ class ProductsProvider with ChangeNotifier {
     return _products.where((element) => element.isPopular).toList();
   }
 
+  Product findById(String productId) {
+    return _products.firstWhere((element) => element.id == productId);
+  }
+
   List<Product>? findByCategory(String categoryName) {
     List<Product> _categoryList = _products
         .where((element) => element.productCategory

@@ -7,9 +7,9 @@ class BrandsNavigationRail extends StatelessWidget {
       onTap: () {},
       child: Container(
         //  color: Colors.red,
-        padding: EdgeInsets.only(left: 5.0, right: 5.0),
-        margin: EdgeInsets.only(right: 20.0, bottom: 5, top: 18),
-        constraints: BoxConstraints(
+        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+        margin: const EdgeInsets.only(right: 20.0, bottom: 5, top: 18),
+        constraints: const BoxConstraints(
             minHeight: 150, minWidth: double.infinity, maxHeight: 180),
         child: Row(
           children: <Widget>[
@@ -17,13 +17,13 @@ class BrandsNavigationRail extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).backgroundColor,
-                  image: DecorationImage(
+                  image: const DecorationImage(
                     image: NetworkImage(
                       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4PdHtXka2-bDDww6Nuect3Mt9IwpE4v4HNw&usqp=CAU',
                     ),
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  boxShadow: [
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                  boxShadow: const [
                     BoxShadow(
                         color: Colors.grey,
                         offset: Offset(2.0, 2.0),
@@ -34,20 +34,20 @@ class BrandsNavigationRail extends StatelessWidget {
             ),
             FittedBox(
               child: Container(
-                margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                 decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(10.0),
                         topRight: Radius.circular(10.0)),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                           color: Colors.grey,
                           offset: Offset(5.0, 5.0),
                           blurRadius: 10.0)
                     ]),
                 width: 160,
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -58,10 +58,8 @@ class BrandsNavigationRail extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).textSelectionColor),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    FittedBox(
+                    const SizedBox(height: 20.0),
+                    const FittedBox(
                       child: Text('US 16 \$',
                           maxLines: 1,
                           style: TextStyle(
@@ -69,14 +67,10 @@ class BrandsNavigationRail extends StatelessWidget {
                             fontSize: 30.0,
                           )),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Text('CatergoryName',
+                    const SizedBox(height: 20.0),
+                    const Text('CatergoryName',
                         style: TextStyle(color: Colors.grey, fontSize: 18.0)),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    const SizedBox(height: 20.0),
                   ],
                 ),
               ),

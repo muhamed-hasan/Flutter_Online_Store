@@ -4,6 +4,7 @@ import 'package:online_store/models/product.dart';
 import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/wishlist_provider.dart';
+import 'package:online_store/screens/inner_screen/product_details.dart';
 import 'package:provider/provider.dart';
 
 import 'brands_rail_widget.dart';
@@ -171,71 +172,76 @@ class ContentSpace extends StatelessWidget {
         width: 200,
         child: Column(
           children: [
-            Row(
-              children: [
-                Stack(
-                  children: [
-                    SizedBox(
-                      height: 180,
-                      width: 120,
-                      child: Image.network(
-                        _products[index].imageUrl,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    Positioned(
-                      child: IconButton(
-                          onPressed: () {
-                            _wishProvider.addProduct(
-                                _products[index].id,
-                                _products[index].title,
-                                _products[index].imageUrl,
-                                _products[index].price);
-                          },
-                          icon: _wishProvider.wishListItems
-                                  .containsKey(_products[index].id)
-                              ? const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                  size: 30,
-                                )
-                              : const Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.red,
-                                  size: 30,
-                                )),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            InkWell(
+              onTap: () => Navigator.of(context).pushNamed(
+                  ProductDetails.routeName,
+                  arguments: _products[index].id),
+              child: Row(
+                children: [
+                  Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          _products[index].title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.w800),
+                      SizedBox(
+                        height: 180,
+                        width: 120,
+                        child: Image.network(
+                          _products[index].imageUrl,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          _products[index].description,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
-                          ),
-                        ),
+                      Positioned(
+                        child: IconButton(
+                            onPressed: () {
+                              _wishProvider.addProduct(
+                                  _products[index].id,
+                                  _products[index].title,
+                                  _products[index].imageUrl,
+                                  _products[index].price);
+                            },
+                            icon: _wishProvider.wishListItems
+                                    .containsKey(_products[index].id)
+                                ? const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 30,
+                                  )
+                                : const Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.red,
+                                    size: 30,
+                                  )),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            _products[index].title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            _products[index].description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8),
