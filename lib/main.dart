@@ -6,6 +6,7 @@ import 'package:online_store/provider/theme_provider.dart';
 import 'package:online_store/provider/wishlist_provider.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/feeds.dart';
+import 'package:online_store/screens/landing_page.dart';
 import 'package:online_store/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: Styles.themeData(themeProvider.darkTheme, context),
-            home: BottomBarScreen(),
+            home: LandingPage(),
             routes: {
               BrandNavigationRailScreen.routeName: (ctx) =>
                   BrandNavigationRailScreen(),
