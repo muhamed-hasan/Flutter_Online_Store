@@ -4,6 +4,8 @@ import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/provider/product_provider.dart';
 import 'package:online_store/provider/theme_provider.dart';
 import 'package:online_store/provider/wishlist_provider.dart';
+import 'package:online_store/screens/auth/login.dart';
+import 'package:online_store/screens/auth/sign_up.dart';
 import 'package:online_store/screens/cart.dart';
 import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/landing_page.dart';
@@ -60,6 +62,9 @@ class _MyAppState extends State<MyApp> {
               FeedsScreen.routeName: (ctx) => FeedsScreen(),
               WishListScreen.routeName: (ctx) => WishListScreen(),
               ProductDetails.routeName: (ctx) => const ProductDetails(),
+              LoginScreen.routeName: (ctx) => LoginScreen(),
+              SignUpScreen.routeName: (ctx) => SignUpScreen(),
+              BottomBarScreen.routeName: (ctx) => BottomBarScreen(),
             },
           );
         }));

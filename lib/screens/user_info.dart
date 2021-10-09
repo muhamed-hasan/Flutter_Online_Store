@@ -174,6 +174,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       title: const Text('Dark theme'),
                     ),
                     userListTile(
+                        onTap: () {
+                          Navigator.canPop(context)
+                              ? Navigator.pop(context)
+                              : null;
+                        },
                         context: context,
                         title: 'Logout',
                         subTitle: '',

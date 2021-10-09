@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/colors.dart';
+import 'package:online_store/screens/bottom_bar.dart';
+
+import 'auth/login.dart';
+import 'auth/sign_up.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -13,7 +17,7 @@ class _LandingPageState extends State<LandingPage>
   List<String> images = [
     'assets/images/family-mall.jpg',
     'assets/images/wishlist.png',
-    'assets/images/shopping.png'
+    'assets/images/shopping.jpg'
   ];
   @override
   void initState() {
@@ -99,8 +103,7 @@ class _LandingPageState extends State<LandingPage>
                       ),
                     )),
                     onPressed: () {
-                      //!!!!!!!!!!!!!!!!!!
-                      // Navigator.pushNamed(context, LoginScreen.routeName);
+                      Navigator.pushNamed(context, LoginScreen.routeName);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -135,8 +138,7 @@ class _LandingPageState extends State<LandingPage>
                           ),
                         )),
                     onPressed: () {
-                      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-                      // Navigator.pushNamed(context, SignUpScreen.routeName);
+                      Navigator.pushNamed(context, SignUpScreen.routeName);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +200,9 @@ class _LandingPageState extends State<LandingPage>
                 child: const Text('Google +'),
               ),
               OutlineButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(BottomBarScreen.routeName);
+                },
                 shape: const StadiumBorder(),
                 highlightedBorderColor: Colors.deepPurple.shade200,
                 borderSide:
