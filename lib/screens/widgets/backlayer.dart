@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:online_store/screens/inner_screen/upload_product_form.dart';
 import 'package:online_store/screens/wishlist.dart';
 
 import '../cart.dart';
@@ -111,7 +112,7 @@ class BackLayerMenu extends StatelessWidget {
                 }, 'Wishlist', 2),
                 const SizedBox(height: 10.0),
                 content(context, () {
-                  navigateTo(context, FeedsScreen.routeName);
+                  navigateTo(context, UploadProductForm.routeName);
                 }, 'Upload a new product', 3),
               ],
             ),
