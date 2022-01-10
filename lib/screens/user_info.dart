@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
@@ -13,6 +14,7 @@ class UserInfoScreen extends StatefulWidget {
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
+  final _auth = FirebaseAuth.instance;
   ScrollController? _scrollController;
   var top = 0.0;
 
@@ -174,10 +176,44 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       title: const Text('Dark theme'),
                     ),
                     userListTile(
-                        onTap: () {
-                          Navigator.canPop(context)
-                              ? Navigator.pop(context)
-                              : null;
+                        onTap: () async {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext ctx) {
+                                return AlertDialog(
+                                  title: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6.0),
+                                        child: Image.network(
+                                          'https://image.flaticon.com/icons/png/128/564/564619.png',
+                                          height: 20,
+                                          width: 20,
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text('Log Out'),
+                                      ),
+                                    ],
+                                  ),
+                                  content: Text('Are you sure'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          _auth.signOut();
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Yes')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('NO')),
+                                  ],
+                                );
+                              });
                         },
                         context: context,
                         title: 'Logout',
