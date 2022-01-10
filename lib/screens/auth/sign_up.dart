@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:online_store/constants/colors.dart';
+import 'package:online_store/services/error_message.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -21,7 +23,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _password = '';
   String _fullName = '';
   int? _phoneNumber;
+  var _isLoading = false;
   File? _pickedImage;
+  final _globalMethods = GlobalMethods();
+  final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
@@ -31,11 +36,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
+    setState(() {
+      _isLoading = true;
+    });
     final isValid = _formKey.currentState!.validate();
+
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
+      try {
+        await _auth.createUserWithEmailAndPassword(
+            email: _emailAddress, password: _password);
+      } on FirebaseException catch (e) {
+        _globalMethods.authErrorHandle(e.message!, context);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -342,33 +361,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const SizedBox(width: 10),
-                            ElevatedButton(
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    side: const BorderSide(
-                                        color: KColorsConsts.backgroundColor),
-                                  ),
-                                )),
-                                onPressed: _submitForm,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Text(
-                                      'Sign up',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 17),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Icon(
-                                      Icons.account_circle,
-                                      size: 18,
-                                    )
-                                  ],
-                                )),
+                            _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ElevatedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        side: const BorderSide(
+                                            color:
+                                                KColorsConsts.backgroundColor),
+                                      ),
+                                    )),
+                                    onPressed: _submitForm,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Text(
+                                          'Sign up',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 17),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Icon(
+                                          Icons.account_circle,
+                                          size: 18,
+                                        )
+                                      ],
+                                    )),
                             const SizedBox(width: 20),
                           ],
                         ),
