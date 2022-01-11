@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final _auth = FirebaseAuth.instance;
   ScrollController? _scrollController;
   var top = 0.0;
+  String? _uid;
+  String? _name = '';
+  String _emailAddress = '';
+  String? _joinedAt = '';
+  String? _imageUrl;
+  int? _phoneNumber = 70;
 
   @override
   void initState() {
@@ -25,12 +32,33 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     _scrollController!.addListener(() {
       setState(() {});
     });
+    getUserInfo();
   }
 
   @override
   void dispose() {
     super.dispose();
     _scrollController!.dispose();
+  }
+
+  void getUserInfo() async {
+    final user = _auth.currentUser;
+    _uid = user!.uid;
+    FirebaseFirestore.instance
+        .collection('onlineStore')
+        .doc('users')
+        .collection('users')
+        .doc(_uid)
+        .get()
+        .then((userDoc) {
+      _name = userDoc.get('name');
+      _emailAddress = userDoc.get('email');
+      final t = userDoc.get('joinedAt') as Timestamp;
+      _joinedAt = t.toDate().toString();
+      _phoneNumber = userDoc.get('phoneNumber');
+      _imageUrl = userDoc.get('imageUrl');
+      setState(() {});
+    });
   }
 
   @override
@@ -73,8 +101,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             Container(
                               height: kToolbarHeight / 1.8,
                               width: kToolbarHeight / 1.8,
-                              decoration: const BoxDecoration(
-                                boxShadow: [
+                              decoration: BoxDecoration(
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.white,
                                     blurRadius: 1.0,
@@ -82,26 +110,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ],
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
-                                ),
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(_imageUrl ??
+                                        'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg')),
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Text(
-                              'Guest',
-                              style: TextStyle(
+                            Text(
+                              _name ?? 'Gest',
+                              style: const TextStyle(
                                   fontSize: 20.0, color: Colors.white),
                             ),
                           ],
                         ),
                       ),
-                      background: const Image(
-                        image: NetworkImage(
-                            'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
-                        fit: BoxFit.fill,
-                      ),
+                      background: Image(
+                          image: NetworkImage(
+                            _imageUrl ??
+                                "https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg",
+                          ),
+                          fit: BoxFit.cover),
                     ),
                   );
                 }),
@@ -140,12 +168,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     userListTile(
                         context: context,
                         title: 'Email',
-                        subTitle: 'Email@mail.com',
+                        subTitle: _emailAddress,
                         index: 0),
                     userListTile(
                         context: context,
                         title: 'Phone number',
-                        subTitle: '1356',
+                        subTitle: _phoneNumber.toString(),
                         index: 1),
                     userListTile(
                         context: context,
@@ -155,7 +183,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     userListTile(
                         context: context,
                         title: 'Joined date',
-                        subTitle: '11/22/20',
+                        subTitle: _joinedAt,
                         index: 3),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
