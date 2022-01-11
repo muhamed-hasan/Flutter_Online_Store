@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:online_store/constants/colors.dart';
 import 'package:online_store/services/error_message.dart';
@@ -37,17 +39,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _submitForm() async {
-    setState(() {
-      _isLoading = true;
-    });
     final isValid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
+
+      setState(() {
+        _isLoading = true;
+      });
       try {
-        await _auth.createUserWithEmailAndPassword(
-            email: _emailAddress, password: _password);
+        await _auth
+            .createUserWithEmailAndPassword(
+                email: _emailAddress, password: _password)
+            .then((value) =>
+                Navigator.canPop(context) ? Navigator.pop(context) : null);
+        final uid = _auth.currentUser?.uid;
+        var date = DateTime.now();
+        FirebaseFirestore.instance
+            .collection('onlineStore')
+            .doc('users')
+            .collection('users')
+            .doc(uid)
+            .set({
+          'id': uid,
+          'name': _fullName,
+          'email': _emailAddress,
+          'phoneNumber': _phoneNumber,
+          'imageUrl': '',
+          'joinedAt': date
+        });
       } on FirebaseException catch (e) {
         _globalMethods.authErrorHandle(e.message!, context);
       } finally {
@@ -337,8 +358,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: TextFormField(
                             key: const ValueKey('phone number'),
                             focusNode: _phoneNumberFocusNode,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             validator: (value) {
-                              if (value!.isEmpty) {
+                              if (value!.isEmpty || value.length < 7) {
                                 return 'Please enter a valid phone number';
                               }
                               return null;
@@ -349,7 +373,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             decoration: InputDecoration(
                                 border: const UnderlineInputBorder(),
                                 filled: true,
-                                prefixIcon: Icon(Icons.phone_android),
+                                prefixIcon: const Icon(Icons.phone_android),
                                 labelText: 'Phone number',
                                 fillColor: Theme.of(context).backgroundColor),
                             onSaved: (value) {
@@ -377,7 +401,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 KColorsConsts.backgroundColor),
                                       ),
                                     )),
-                                    onPressed: _submitForm,
+                                    onPressed: () {
+                                      _submitForm();
+                                    },
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
