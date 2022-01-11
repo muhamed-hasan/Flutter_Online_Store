@@ -9,6 +9,7 @@ import 'package:online_store/constants/colors.dart';
 import 'package:online_store/services/error_message.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = '/SignUpScreen';
@@ -30,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _globalMethods = GlobalMethods();
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+  String? _url;
   @override
   void dispose() {
     _passwordFocusNode.dispose();
@@ -49,6 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = true;
       });
       try {
+//Create user with Email and Password
         await _auth
             .createUserWithEmailAndPassword(
                 email: _emailAddress, password: _password)
@@ -56,32 +59,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Navigator.canPop(context) ? Navigator.pop(context) : null);
         final uid = _auth.currentUser?.uid;
         var date = DateTime.now();
-        FirebaseFirestore.instance
-            .collection('onlineStore')
-            .doc('users')
-            .collection('users')
-            .doc(uid)
-            .set({
-          'id': uid,
-          'name': _fullName,
-          'email': _emailAddress,
-          'phoneNumber': _phoneNumber,
-          'imageUrl': '',
-          'joinedAt': date
-        });
+
+        //Upload Image to Firebase Storage
+        if (_pickedImage == null) {
+          _globalMethods.authErrorHandle('Pick an image', context);
+          return;
+        } else {
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child('onlineStore')
+              .child('userImages')
+              .child(_fullName + '.jpg');
+          //Add user to firebase firestore
+          await ref.putFile(_pickedImage!);
+          _url = await ref.getDownloadURL();
+          await FirebaseFirestore.instance
+              .collection('onlineStore')
+              .doc('users')
+              .collection('users')
+              .doc(uid)
+              .set({
+            'id': uid,
+            'name': _fullName,
+            'email': _emailAddress,
+            'phoneNumber': _phoneNumber,
+            'joinedAt': date,
+            'imageUrl': _url,
+          });
+        }
       } on FirebaseException catch (e) {
-        _globalMethods.authErrorHandle(e.message!, context);
-      } finally {
         setState(() {
           _isLoading = false;
         });
+        _globalMethods.authErrorHandle(e.message!, context);
       }
     }
   }
 
   void _pickImageCamera() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImage =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 50);
     final pickedImageFile = File(pickedImage!.path);
     setState(() {
       _pickedImage = pickedImageFile;

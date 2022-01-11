@@ -42,7 +42,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     final themeState = Provider.of<ThemeProvider>(context, listen: false);
     final _suggestedProducts =
         Provider.of<ProductsProvider>(context, listen: false).popularProducts;
-    final _cartProduct = Provider.of<CartProvider>(context, listen: false);
+    final _cartProduct = Provider.of<CartProvider>(context);
     final _wishListProvider = Provider.of<WishListProvider>(context);
 
     return Scaffold(
