@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -62,10 +63,33 @@ class _LandingPageState extends State<LandingPage>
               GoogleAuthProvider.credential(
                   accessToken: googleAuth.accessToken,
                   idToken: googleAuth.idToken));
+          //? Add user to firebase firestore
+          var date = DateTime.now();
+          await FirebaseFirestore.instance
+              .collection('onlineStore')
+              .doc('users')
+              .collection('users')
+              .doc(authResult.user!.uid)
+              .set({
+            'id': authResult.user!.uid,
+            'name': authResult.user!.displayName,
+            'email': authResult.user!.email,
+            'phoneNumber': authResult.user!.phoneNumber,
+            'joinedAt': date,
+            'imageUrl': authResult.user!.photoURL,
+          });
         } on FirebaseException catch (e) {
           _globalMethods.authErrorHandle(e.message.toString(), context);
         }
       }
+    }
+  }
+
+  void _loginAnonymous() async {
+    try {
+      await _auth.signInAnonymously();
+    } on FirebaseException catch (e) {
+      _globalMethods.authErrorHandle(e.message!, context);
     }
   }
 
@@ -227,7 +251,7 @@ class _LandingPageState extends State<LandingPage>
               ),
               OutlineButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(BottomBarScreen.routeName);
+                  _loginAnonymous();
                 },
                 shape: const StadiumBorder(),
                 highlightedBorderColor: Colors.deepPurple.shade200,

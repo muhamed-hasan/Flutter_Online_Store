@@ -23,7 +23,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   String _emailAddress = '';
   String? _joinedAt = '';
   String? _imageUrl;
-  int? _phoneNumber = 70;
+  int? _phoneNumber = 0;
 
   @override
   void initState() {
@@ -44,21 +44,23 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   void getUserInfo() async {
     final user = _auth.currentUser;
     _uid = user!.uid;
-    FirebaseFirestore.instance
-        .collection('onlineStore')
-        .doc('users')
-        .collection('users')
-        .doc(_uid)
-        .get()
-        .then((userDoc) {
-      _name = userDoc.get('name');
-      _emailAddress = userDoc.get('email');
-      final t = userDoc.get('joinedAt') as Timestamp;
-      _joinedAt = t.toDate().toString();
-      _phoneNumber = userDoc.get('phoneNumber');
-      _imageUrl = userDoc.get('imageUrl');
-      setState(() {});
-    });
+    user.isAnonymous
+        ? null
+        : FirebaseFirestore.instance
+            .collection('onlineStore')
+            .doc('users')
+            .collection('users')
+            .doc(_uid)
+            .get()
+            .then((userDoc) {
+            _name = userDoc.get('name');
+            _emailAddress = userDoc.get('email');
+            final t = userDoc.get('joinedAt') as Timestamp;
+            _joinedAt = t.toDate().toString();
+            _phoneNumber = userDoc.get('phoneNumber');
+            _imageUrl = userDoc.get('imageUrl');
+            setState(() {});
+          });
   }
 
   @override
