@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:online_store/constants/colors.dart';
 import 'package:online_store/screens/bottom_bar.dart';
+import 'package:online_store/services/error_message.dart';
 
 import 'auth/login.dart';
 import 'auth/sign_up.dart';
@@ -19,6 +22,9 @@ class _LandingPageState extends State<LandingPage>
     'assets/images/wishlist.png',
     'assets/images/shopping.jpg'
   ];
+  final _globalMethods = GlobalMethods();
+  final _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +49,24 @@ class _LandingPageState extends State<LandingPage>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  Future<void> _googleSignIn() async {
+    final googleSignIn = GoogleSignIn();
+    final googleAccount = await googleSignIn.signIn();
+    if (googleAccount != null) {
+      final googleAuth = await googleAccount.authentication;
+      if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+        try {
+          final authResult = await _auth.signInWithCredential(
+              GoogleAuthProvider.credential(
+                  accessToken: googleAuth.accessToken,
+                  idToken: googleAuth.idToken));
+        } on FirebaseException catch (e) {
+          _globalMethods.authErrorHandle(e.message.toString(), context);
+        }
+      }
+    }
   }
 
   @override
@@ -193,7 +217,9 @@ class _LandingPageState extends State<LandingPage>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               OutlineButton(
-                onPressed: () {},
+                onPressed: () {
+                  _googleSignIn();
+                },
                 shape: const StadiumBorder(),
                 highlightedBorderColor: Colors.red.shade200,
                 borderSide: const BorderSide(width: 2, color: Colors.red),
