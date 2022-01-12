@@ -16,15 +16,15 @@ class FeedsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Product>? _products;
     final argument = ModalRoute.of(context)?.settings.arguments;
+    final productsProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
+
     if (argument == null) {
-      _products =
-          Provider.of<ProductsProvider>(context, listen: false).products;
+      _products = productsProvider.products;
     } else if (argument == 'popular') {
-      _products =
-          Provider.of<ProductsProvider>(context, listen: false).popularProducts;
+      _products = productsProvider.popularProducts;
     } else {
-      _products = Provider.of<ProductsProvider>(context, listen: false)
-          .findByCategory(argument.toString());
+      _products = productsProvider.findByCategory(argument.toString());
     }
 
     return Scaffold(
