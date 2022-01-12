@@ -12,6 +12,7 @@ import 'package:online_store/screens/feeds.dart';
 import 'package:online_store/screens/wishlist.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/auth/forget_password.dart';
 import 'screens/bottom_bar.dart';
 import 'screens/inner_screen/brands_navigation_rail.dart';
 import 'screens/inner_screen/product_details.dart';
@@ -83,6 +84,7 @@ class _MyAppState extends State<MyApp> {
                       SignUpScreen.routeName: (ctx) => SignUpScreen(),
                       BottomBarScreen.routeName: (ctx) => BottomBarScreen(),
                       UploadProductForm.routeName: (ctx) => UploadProductForm(),
+                      ForgetPassword.routeName: (ctx) => ForgetPassword(),
                     },
                   );
                 }

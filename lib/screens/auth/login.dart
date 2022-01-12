@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:online_store/constants/colors.dart';
+import 'package:online_store/screens/auth/forget_password.dart';
 import 'package:online_store/services/error_message.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
@@ -29,13 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submitForm() async {
-    setState(() {
-      _isLoading = true;
-    });
     final isValid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
     if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
       _formKey.currentState!.save();
       try {
         await _auth
@@ -166,6 +167,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           obscureText: _obscureText,
                           onEditingComplete: _submitForm,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(ForgetPassword.routeName);
+                              },
+                              child: const Text('Forget password ?')),
                         ),
                       ),
                       Row(
