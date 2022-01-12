@@ -1,9 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:online_store/services/error_message.dart';
+import 'package:uuid/uuid.dart';
 
 class UploadProductForm extends StatefulWidget {
   static const routeName = '/UploadProductForm';
@@ -27,6 +32,13 @@ class _UploadProductFormState extends State<UploadProductForm> {
   String? _brandValue;
 
   File? _pickedImage;
+  bool _isLoading = false;
+  final _globalMethods = GlobalMethods();
+
+  final _auth = FirebaseAuth.instance;
+
+  String? _imageUrl;
+  var uuid = Uuid();
   showAlertDialog(BuildContext context, String title, String body) {
     // show the dialog
     showDialog(
@@ -48,7 +60,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
     );
   }
 
-  void _trySubmit() {
+  void _trySubmit() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
@@ -60,7 +72,50 @@ class _UploadProductFormState extends State<UploadProductForm> {
       print(_productBrand);
       print(_productDescription);
       print(_productQuantity);
-      // Use those values to send our auth request ...
+
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        final uid = _auth.currentUser?.uid;
+
+        //Upload Image to Firebase Storage
+        if (_pickedImage == null) {
+          _globalMethods.authErrorHandle('Pick an image', context);
+          return;
+        } else {
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child('onlineStore')
+              .child('productImages')
+              .child(_productTitle + '.jpg');
+          //Add user to firebase firestore
+          await ref.putFile(_pickedImage!);
+          _imageUrl = await ref.getDownloadURL();
+          final productId = uuid.v4();
+          await FirebaseFirestore.instance
+              .collection('onlineStore')
+              .doc('users')
+              .collection('products')
+              .doc(productId)
+              .set({
+            'productId': productId,
+            'userId': uid,
+            'title': _productTitle,
+            'price': _productPrice,
+            'productImage': _imageUrl,
+            'productCategory': _productCategory,
+            'description': _productDescription,
+            'productQuantity': _productQuantity,
+            'createdAt': DateTime.now()
+          });
+        }
+      } on FirebaseException catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        _globalMethods.authErrorHandle(e.message!, context);
+      }
     }
   }
 
