@@ -3,10 +3,40 @@ import 'package:online_store/provider/cart_provider.dart';
 import 'package:online_store/screens/widgets/cart_empty.dart';
 import 'package:online_store/screens/widgets/cart_item.dart';
 import 'package:online_store/screens/widgets/custom_button.dart';
+import 'package:online_store/services/payment.dart';
 import 'package:provider/provider.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static const routeName = '/Cart';
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    StripeService.init();
+  }
+
+  var response;
+  Future<void> payWithCard({required int amount}) async {
+    ProgressDialog dialog = ProgressDialog(context: context);
+    // dialog.style(message: 'Please wait...');
+    dialog.show(max: 100, msg: 'Please wait...');
+    // await dialog.show();
+    response = await StripeService.payWithNewCard(
+        currency: 'USD', amount: amount.toString());
+    dialog.close();
+    print('response : ${response.success}');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.message),
+      duration: Duration(milliseconds: response.success == true ? 1200 : 3000),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final _cartProducts = Provider.of<CartProvider>(context);
@@ -69,7 +99,11 @@ class CartScreen extends StatelessWidget {
               ),
               CustomButton(
                 title: 'Checkout',
-                onTap: () {},
+                onTap: () {
+                  payWithCard(
+                    amount: total.toInt(),
+                  );
+                },
               ),
             ],
           ),

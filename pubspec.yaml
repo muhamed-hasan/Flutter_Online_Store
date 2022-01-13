@@ -48,6 +48,9 @@ dependencies:
   cloud_firestore: ^3.1.6
   firebase_storage: ^10.2.5
   uuid: ^3.0.5
+  http: ^0.13.4
+  stripe_payment: ^1.1.4
+  sn_progress_dialog: ^1.0.3
 
 dev_dependencies:
   flutter_test:
